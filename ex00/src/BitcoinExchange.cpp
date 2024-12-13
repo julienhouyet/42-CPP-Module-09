@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
 // ************************************************************************** //
 //                            BitcoinExchange Class                           //
 // ************************************************************************** //
@@ -42,6 +43,14 @@ BitcoinExchange::~BitcoinExchange(void)
 void BitcoinExchange::parseData(std::ifstream &file)
 {
     std::string line;
+
+	// Check if the first line is "date | value"
+    if (std::getline(file, line) && line != "date | value") {
+        std::cerr << "Error: first line must be 'date | value'" << std::endl;
+        return;
+    }
+	
+	// Check the rest of the file
     while (std::getline(file, line)) {
         std::cout << line << std::endl;
 		std::stringstream ss(line);
@@ -53,6 +62,11 @@ void BitcoinExchange::parseData(std::ifstream &file)
 			trimWhiteSpace(value);
 
 			// TODO : check if date is valid
+			if (!isValidDate(date))
+			{
+				std::cerr << "Error: invalid date => " << date << std::endl;
+				continue;
+			}
 
 			// TODO : check if value is valid
 
@@ -74,4 +88,59 @@ void BitcoinExchange::trimWhiteSpace(std::string &str)
 {
 	str.erase(0, str.find_first_not_of(" \t"));
 	str.erase(str.find_last_not_of(" \t") + 1);
+}
+
+/**
+ * @brief Check if the date is valid
+ * 
+ * @param date The date to check
+ * 
+ * @return true if the date is valid, false otherwise
+ */
+bool BitcoinExchange::isValidDate(const std::string &date)
+{
+	std::stringstream ss(date);
+	std::string year, month, day;
+
+	if (std::getline(ss, year, '-') && std::getline(ss, month, '-') && std::getline(ss, day))
+	{
+		if (year.size() == 4 && month.size() == 2 && day.size() == 2)
+		{
+			std::stringstream year_ss(year);
+			std::stringstream month_ss(month);
+			std::stringstream day_ss(day);
+			int year_int, month_int, day_int;
+			year_ss >> year_int;
+			month_ss >> month_int;
+			day_ss >> day_int;
+
+			if (year_int < 2009 || year_int > 2024)
+			{
+				return false;
+			}
+			if (month_int < 1 || month_int > 12)
+			{
+				return false;
+			}
+			if (day_int < 1 || day_int > 31)
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * @brief Check if the value is valid
+ * 
+ * @param value The value to check
+ * 
+ * @return true if the value is valid, false otherwise
+ */
+bool BitcoinExchange::isValidValue(const std::string &value)
+{
+	std::stringstream ss(value);
+	return true;
 }
