@@ -1,5 +1,7 @@
 #include "../include/BitcoinExchange.hpp"
 #include <iostream>
+#include <string>
+
 // ************************************************************************** //
 //                            BitcoinExchange Class                           //
 // ************************************************************************** //
@@ -32,6 +34,8 @@ BitcoinExchange::~BitcoinExchange(void)
 
 void BitcoinExchange::parseData(std::ifstream &file)
 {
-	(void)file;
-	std::cout << "parseData" << std::endl;
+    std::string line;
+    while (std::getline(file, line)) {
+        std::cout << line << std::endl;
+    }
 }
