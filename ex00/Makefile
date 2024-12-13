@@ -10,7 +10,8 @@ SRC_DIR 	= src
 INC_DIR		= include
 OBJ_DIR 	= obj
 
-SRC 		= 	$(SRC_DIR)/main.cpp
+SRC 		= 	$(SRC_DIR)/BitcoinExchange.cpp \
+						$(SRC_DIR)/main.cpp 
 				
 OBJ			= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 CC 			= c++

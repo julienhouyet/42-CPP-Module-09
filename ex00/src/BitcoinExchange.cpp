@@ -1,10 +1,10 @@
 #include "../include/BitcoinExchange.hpp"
-
+#include <iostream>
 // ************************************************************************** //
 //                            BitcoinExchange Class                           //
 // ************************************************************************** //
 
-BitcoinExchange::BitcoinExchange(void)
+BitcoinExchange::BitcoinExchange(void) : _data()
 {
 }
 
@@ -17,7 +17,7 @@ BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &copy)
 {
 	if (this != &copy)
 	{
-    // TOTO : Implement the assignment operator
+    	_data = copy._data;
 	}
 	return *this;
 }
@@ -29,3 +29,9 @@ BitcoinExchange::~BitcoinExchange(void)
 // ************************************************************************** //
 //                         Public Member Functions                            //
 // ************************************************************************** //
+
+void BitcoinExchange::parseData(std::ifstream &file)
+{
+	(void)file;
+	std::cout << "parseData" << std::endl;
+}
