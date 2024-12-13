@@ -17,6 +17,7 @@ public:
 	~BitcoinExchange(void);
 
 	void parseData(std::ifstream &file);
+	void trimWhiteSpace(std::string &str);
 };
 
 #endif
