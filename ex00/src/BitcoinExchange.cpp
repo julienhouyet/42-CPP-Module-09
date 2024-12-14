@@ -110,7 +110,6 @@ void BitcoinExchange::calculateExchangeRate(std::ifstream &file)
 	
 	// Check the rest of the file
     while (std::getline(file, line)) {
-        std::cout << line << std::endl;
 		std::stringstream ss(line);
         std::string date, value;
 
@@ -132,7 +131,22 @@ void BitcoinExchange::calculateExchangeRate(std::ifstream &file)
             }
 
 			if (dateValid && valueValid) {
-				std::cout << "Date: '" << date << "', Value: '" << value << "'" << std::endl;
+				std::map<std::string, float>::iterator dateMatch = _database.lower_bound(date);
+				if (dateMatch == _database.end() || dateMatch->first != date) {
+					if (dateMatch == _database.begin()) {
+						std::cerr << "Error: no previous date available for " << date << std::endl;
+						continue;
+					}
+					--dateMatch;
+				}
+
+				float rate = dateMatch->second;
+				std::stringstream valueStream(value);
+				float inputValue;
+				valueStream >> inputValue;
+				float result = inputValue * rate;
+
+				std::cout << date << " => " << value << " = " << result << std::endl;
 			}
         } else {
             std::cerr << "Error: bad input => " << line << std::endl;
