@@ -62,7 +62,7 @@ void BitcoinExchange::loadDatabase(const std::string &filename)
  * 
  * @return void
  */
-void BitcoinExchange::parseInput(std::ifstream &file)
+void BitcoinExchange::calculateExchangeRate(std::ifstream &file)
 {
     std::string line;
 	std::string dateErrorMessage;
