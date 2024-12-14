@@ -15,7 +15,7 @@ public:
 	BitcoinExchange &operator=(const BitcoinExchange &copy);
 	~BitcoinExchange(void);
 
-	void loadDatabase(const std::string &filename);
+	void loadDatabase();
 	void calculateExchangeRate(std::ifstream &file);
 	void trimWhiteSpace(std::string &str);
 	bool isValidDate(const std::string &date, std::string &errorMessage);

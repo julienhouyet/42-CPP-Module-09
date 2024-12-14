@@ -2,14 +2,15 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-
+#include <stdexcept>
+#include <cstdlib>
 // ************************************************************************** //
 //                            BitcoinExchange Class                           //
 // ************************************************************************** //
 
 BitcoinExchange::BitcoinExchange(void)
 {
-	this->loadDatabase("data.csv");
+	this->loadDatabase();
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &copy)
@@ -41,18 +42,51 @@ BitcoinExchange::~BitcoinExchange(void)
  * 
  * @return void
  */
-void BitcoinExchange::loadDatabase(const std::string &filename)
+void BitcoinExchange::loadDatabase()
 {
-	std::ifstream file(filename.c_str());
-	if (!file.is_open())
-	{
-		std::cerr << "Error: could not open file " << filename << std::endl;
-		return;
-	}
-	else {
-		std::cout << "Database loaded successfully" << std::endl;
-	}
+    std::ifstream file("data.csv");
+    if (!file.is_open())
+    {
+		std::cerr << "Error: could not load database." << std::endl;
+		exit(1);
+    }
 
+    std::string line;
+    // Skip the header line
+    std::getline(file, line);
+
+    while (std::getline(file, line))
+    {
+        std::stringstream ss(line);
+        std::string date;
+        float rate;
+
+        if (std::getline(ss, date, ',') && (ss >> rate))
+        {
+            trimWhiteSpace(date);
+
+            std::string dateErrorMessage;
+            if (!isValidDate(date, dateErrorMessage))
+            {
+				std::cerr << "Error: corrupted database." << std::endl;
+				exit(1);
+            }
+
+            if (rate < 0 || rate > 2147483647)
+            {
+				std::cerr << "Error: corrupted database." << std::endl;
+				exit(1);
+            }
+
+            _database[date] = rate;
+        }
+        else
+        {
+			std::cerr << "Error: corrupted database." << std::endl;
+			exit(1);
+        }
+    }
+	file.close();
 }
 
 /** 
