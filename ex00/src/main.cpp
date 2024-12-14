@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     BitcoinExchange btc;
 
     try {
-        btc.parseData(file);
+        btc.parseInput(file);
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

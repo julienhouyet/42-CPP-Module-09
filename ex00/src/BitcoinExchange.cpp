@@ -7,8 +7,9 @@
 //                            BitcoinExchange Class                           //
 // ************************************************************************** //
 
-BitcoinExchange::BitcoinExchange(void) : _data()
+BitcoinExchange::BitcoinExchange(void)
 {
+	this->loadDatabase("data.csv");
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &copy)
@@ -20,7 +21,7 @@ BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &copy)
 {
 	if (this != &copy)
 	{
-    	_data = copy._data;
+    	_database = copy._database;
 	}
 	return *this;
 }
@@ -33,14 +34,35 @@ BitcoinExchange::~BitcoinExchange(void)
 //                         Public Member Functions                            //
 // ************************************************************************** //
 
+/**
+ * @brief Load the data from the CSV file
+ * 
+ * @param filename The name of the file to load
+ * 
+ * @return void
+ */
+void BitcoinExchange::loadDatabase(const std::string &filename)
+{
+	std::ifstream file(filename.c_str());
+	if (!file.is_open())
+	{
+		std::cerr << "Error: could not open file " << filename << std::endl;
+		return;
+	}
+	else {
+		std::cout << "Database loaded successfully" << std::endl;
+	}
+
+}
+
 /** 
- * @brief Parse the data from the file and return value of bitcoin at the date
+ * @brief Parse the input file and return value of bitcoin at the date
  * 
  * @param file The file to parse
  * 
  * @return void
  */
-void BitcoinExchange::parseData(std::ifstream &file)
+void BitcoinExchange::parseInput(std::ifstream &file)
 {
     std::string line;
 	std::string dateErrorMessage;

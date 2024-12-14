@@ -8,15 +8,15 @@
 class BitcoinExchange
 {
 private:
-	std::map<std::string, float> _data;
-
+	std::map<std::string, float> _database;
 public:
 	BitcoinExchange(void);
 	BitcoinExchange(const BitcoinExchange &copy);
 	BitcoinExchange &operator=(const BitcoinExchange &copy);
 	~BitcoinExchange(void);
 
-	void parseData(std::ifstream &file);
+	void loadDatabase(const std::string &filename);
+	void parseInput(std::ifstream &file);
 	void trimWhiteSpace(std::string &str);
 	bool isValidDate(const std::string &date, std::string &errorMessage);
 	bool isValidValue(const std::string &value, std::string &errorMessage);
