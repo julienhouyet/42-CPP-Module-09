@@ -15,11 +15,12 @@ public:
 	BitcoinExchange &operator=(const BitcoinExchange &copy);
 	~BitcoinExchange(void);
 
-	void loadDatabase();
+	void _loadDatabase();
+	void _trimWhiteSpace(std::string &str);
+	bool _isValidDate(const std::string &date, std::string &errorMessage);
+	bool _isValidValue(const std::string &value, std::string &errorMessage);
+
 	void calculateExchangeRate(std::ifstream &file);
-	void trimWhiteSpace(std::string &str);
-	bool isValidDate(const std::string &date, std::string &errorMessage);
-	bool isValidValue(const std::string &value, std::string &errorMessage);
 };
 
 #endif

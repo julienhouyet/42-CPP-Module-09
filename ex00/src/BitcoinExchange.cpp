@@ -4,13 +4,14 @@
 #include <sstream>
 #include <stdexcept>
 #include <cstdlib>
+
 // ************************************************************************** //
 //                            BitcoinExchange Class                           //
 // ************************************************************************** //
 
 BitcoinExchange::BitcoinExchange(void)
 {
-	this->loadDatabase();
+	this->_loadDatabase();
 }
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &copy)
@@ -32,7 +33,7 @@ BitcoinExchange::~BitcoinExchange(void)
 }
 
 // ************************************************************************** //
-//                         Public Member Functions                            //
+//                         Private Member Functions                           //
 // ************************************************************************** //
 
 /**
@@ -42,7 +43,7 @@ BitcoinExchange::~BitcoinExchange(void)
  * 
  * @return void
  */
-void BitcoinExchange::loadDatabase()
+void BitcoinExchange::_loadDatabase()
 {
     std::ifstream file("data.csv");
     if (!file.is_open())
@@ -63,10 +64,10 @@ void BitcoinExchange::loadDatabase()
 
         if (std::getline(ss, date, ',') && (ss >> rate))
         {
-            trimWhiteSpace(date);
+            _trimWhiteSpace(date);
 
             std::string dateErrorMessage;
-            if (!isValidDate(date, dateErrorMessage))
+            if (!_isValidDate(date, dateErrorMessage))
             {
 				std::cerr << "Error: corrupted database." << std::endl;
 				exit(1);
@@ -90,78 +91,13 @@ void BitcoinExchange::loadDatabase()
 }
 
 /** 
- * @brief Parse the input file and return value of bitcoin at the date
- * 
- * @param file The file to parse
- * 
- * @return void
- */
-void BitcoinExchange::calculateExchangeRate(std::ifstream &file)
-{
-    std::string line;
-	std::string dateErrorMessage;
-	std::string valueErrorMessage;
-
-	// Check if the first line is "date | value"
-    if (std::getline(file, line) && line != "date | value") {
-        std::cerr << "Error: first line must be 'date | value'" << std::endl;
-        return;
-    }
-	
-	// Check the rest of the file
-    while (std::getline(file, line)) {
-		std::stringstream ss(line);
-        std::string date, value;
-
-		// Check if line is valid
-        if (std::getline(ss, date, '|') && std::getline(ss, value)) {
-			trimWhiteSpace(date);
-			trimWhiteSpace(value);
-			dateErrorMessage.clear();
-			valueErrorMessage.clear();
-
-            bool dateValid = isValidDate(date, dateErrorMessage);
-            bool valueValid = isValidValue(value, valueErrorMessage);
-
-            if (!dateValid) {
-                std::cerr << dateErrorMessage << std::endl;
-            }
-            if (!valueValid) {
-                std::cerr << valueErrorMessage << std::endl;
-            }
-
-			if (dateValid && valueValid) {
-				std::map<std::string, float>::iterator dateMatch = _database.lower_bound(date);
-				if (dateMatch == _database.end() || dateMatch->first != date) {
-					if (dateMatch == _database.begin()) {
-						std::cerr << "Error: no previous date available for " << date << std::endl;
-						continue;
-					}
-					--dateMatch;
-				}
-
-				float rate = dateMatch->second;
-				std::stringstream valueStream(value);
-				float inputValue;
-				valueStream >> inputValue;
-				float result = inputValue * rate;
-
-				std::cout << date << " => " << value << " = " << result << std::endl;
-			}
-        } else {
-            std::cerr << "Error: bad input => " << line << std::endl;
-        }
-    }
-}
-
-/** 
  * @brief Trim whitespace from the beginning and end of a string
  * 
  * @param str The string to trim
  * 
  * @return void
  */
-void BitcoinExchange::trimWhiteSpace(std::string &str)
+void BitcoinExchange::_trimWhiteSpace(std::string &str)
 {
 	str.erase(0, str.find_first_not_of(" \t"));
 	str.erase(str.find_last_not_of(" \t") + 1);
@@ -174,7 +110,7 @@ void BitcoinExchange::trimWhiteSpace(std::string &str)
  * 
  * @return true if the date is valid, false otherwise
  */
-bool BitcoinExchange::isValidDate(const std::string &date, std::string &dateErrorMessage)
+bool BitcoinExchange::_isValidDate(const std::string &date, std::string &dateErrorMessage)
 {
     std::stringstream ss(date);
     std::string year, month, day;
@@ -209,7 +145,7 @@ bool BitcoinExchange::isValidDate(const std::string &date, std::string &dateErro
  * 
  * @return true if the value is valid, false otherwise
  */
-bool BitcoinExchange::isValidValue(const std::string &value, std::string &valueErrorMessage)
+bool BitcoinExchange::_isValidValue(const std::string &value, std::string &valueErrorMessage)
 {
     std::stringstream ss(value);
     int intValue;
@@ -242,4 +178,73 @@ bool BitcoinExchange::isValidValue(const std::string &value, std::string &valueE
         return true;
     }
     return false;
+}
+
+// ************************************************************************** //
+//                         Public Member Functions                            //
+// ************************************************************************** //
+
+/** 
+ * @brief Parse the input file and return value of bitcoin at the date
+ * 
+ * @param file The file to parse
+ * 
+ * @return void
+ */
+void BitcoinExchange::calculateExchangeRate(std::ifstream &file)
+{
+    std::string line;
+	std::string dateErrorMessage;
+	std::string valueErrorMessage;
+
+	// Check if the first line is "date | value"
+    if (std::getline(file, line) && line != "date | value") {
+        std::cerr << "Error: first line must be 'date | value'" << std::endl;
+        return;
+    }
+	
+	// Check the rest of the file
+    while (std::getline(file, line)) {
+		std::stringstream ss(line);
+        std::string date, value;
+
+		// Check if line is valid
+        if (std::getline(ss, date, '|') && std::getline(ss, value)) {
+			_trimWhiteSpace(date);
+			_trimWhiteSpace(value);
+			dateErrorMessage.clear();
+			valueErrorMessage.clear();
+
+            bool dateValid = _isValidDate(date, dateErrorMessage);
+            bool valueValid = _isValidValue(value, valueErrorMessage);
+
+            if (!dateValid) {
+                std::cerr << dateErrorMessage << std::endl;
+            }
+            if (!valueValid) {
+                std::cerr << valueErrorMessage << std::endl;
+            }
+
+			if (dateValid && valueValid) {
+				std::map<std::string, float>::iterator dateMatch = _database.lower_bound(date);
+				if (dateMatch == _database.end() || dateMatch->first != date) {
+					if (dateMatch == _database.begin()) {
+						std::cerr << "Error: no previous date available for " << date << std::endl;
+						continue;
+					}
+					--dateMatch;
+				}
+
+				float rate = dateMatch->second;
+				std::stringstream valueStream(value);
+				float inputValue;
+				valueStream >> inputValue;
+				float result = inputValue * rate;
+
+				std::cout << date << " => " << value << " = " << result << std::endl;
+			}
+        } else {
+            std::cerr << "Error: bad input => " << line << std::endl;
+        }
+    }
 }
