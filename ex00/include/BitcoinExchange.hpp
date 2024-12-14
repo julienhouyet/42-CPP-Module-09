@@ -18,8 +18,8 @@ public:
 
 	void parseData(std::ifstream &file);
 	void trimWhiteSpace(std::string &str);
-	bool isValidDate(const std::string &date);
-	bool isValidValue(const std::string &value);
+	bool isValidDate(const std::string &date, std::string &errorMessage);
+	bool isValidValue(const std::string &value, std::string &errorMessage);
 };
 
 #endif

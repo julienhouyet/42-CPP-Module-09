@@ -43,6 +43,8 @@ BitcoinExchange::~BitcoinExchange(void)
 void BitcoinExchange::parseData(std::ifstream &file)
 {
     std::string line;
+	std::string dateErrorMessage;
+	std::string valueErrorMessage;
 
 	// Check if the first line is "date | value"
     if (std::getline(file, line) && line != "date | value") {
@@ -60,17 +62,22 @@ void BitcoinExchange::parseData(std::ifstream &file)
         if (std::getline(ss, date, '|') && std::getline(ss, value)) {
 			trimWhiteSpace(date);
 			trimWhiteSpace(value);
+			dateErrorMessage.clear();
+			valueErrorMessage.clear();
 
-			// TODO : check if date is valid
-			if (!isValidDate(date))
-			{
-				std::cerr << "Error: invalid date => " << date << std::endl;
-				continue;
+            bool dateValid = isValidDate(date, dateErrorMessage);
+            bool valueValid = isValidValue(value, valueErrorMessage);
+
+            if (!dateValid) {
+                std::cerr << dateErrorMessage << std::endl;
+            }
+            if (!valueValid) {
+                std::cerr << valueErrorMessage << std::endl;
+            }
+
+			if (dateValid && valueValid) {
+				std::cout << "Date: '" << date << "', Value: '" << value << "'" << std::endl;
 			}
-
-			// TODO : check if value is valid
-
-            std::cout << "Date: '" << date << "', Value: '" << value << "'" << std::endl;
         } else {
             std::cerr << "Error: bad input => " << line << std::endl;
         }
@@ -97,39 +104,32 @@ void BitcoinExchange::trimWhiteSpace(std::string &str)
  * 
  * @return true if the date is valid, false otherwise
  */
-bool BitcoinExchange::isValidDate(const std::string &date)
+bool BitcoinExchange::isValidDate(const std::string &date, std::string &dateErrorMessage)
 {
-	std::stringstream ss(date);
-	std::string year, month, day;
+    std::stringstream ss(date);
+    std::string year, month, day;
 
-	if (std::getline(ss, year, '-') && std::getline(ss, month, '-') && std::getline(ss, day))
-	{
-		if (year.size() == 4 && month.size() == 2 && day.size() == 2)
-		{
-			std::stringstream year_ss(year);
-			std::stringstream month_ss(month);
-			std::stringstream day_ss(day);
-			int year_int, month_int, day_int;
-			year_ss >> year_int;
-			month_ss >> month_int;
-			day_ss >> day_int;
+    if (std::getline(ss, year, '-') && std::getline(ss, month, '-') && std::getline(ss, day))
+    {
+        if (year.size() == 4 && month.size() == 2 && day.size() == 2)
+        {
+            std::stringstream year_ss(year);
+            std::stringstream month_ss(month);
+            std::stringstream day_ss(day);
+            int year_int, month_int, day_int;
+            year_ss >> year_int;
+            month_ss >> month_int;
+            day_ss >> day_int;
 
-			if (year_int < 2009 || year_int > 2024)
-			{
-				return false;
-			}
-			if (month_int < 1 || month_int > 12)
-			{
-				return false;
-			}
-			if (day_int < 1 || day_int > 31)
-			{
-				return false;
-			}
-			return true;
-		}
-	}
-	return false;
+            if (year_int < 2009 || year_int > 2024 || month_int < 1 || month_int > 12 || day_int < 1 || day_int > 31)
+            {
+                dateErrorMessage = "Error: bad input => " + date;
+                return false;
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -139,8 +139,37 @@ bool BitcoinExchange::isValidDate(const std::string &date)
  * 
  * @return true if the value is valid, false otherwise
  */
-bool BitcoinExchange::isValidValue(const std::string &value)
+bool BitcoinExchange::isValidValue(const std::string &value, std::string &valueErrorMessage)
 {
-	std::stringstream ss(value);
-	return true;
+    std::stringstream ss(value);
+    int intValue;
+
+    if (ss >> intValue) {
+        if (intValue < 0) {
+            valueErrorMessage = "Error: not a positive number.";
+            return false;
+        }
+        if (intValue > 1000) {
+            valueErrorMessage = "Error: too large a number.";
+            return false;
+        }
+        return true;
+    }
+
+    ss.clear();
+    ss.str(value);
+
+    float floatValue;
+    if (ss >> floatValue) {
+        if (floatValue < 0.0f) {
+            valueErrorMessage = "Error: not a positive number.";
+            return false;
+        }
+        if (floatValue > 1000.0f) {
+            valueErrorMessage = "Error: too large a number.";
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
