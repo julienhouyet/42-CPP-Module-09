@@ -8,9 +8,13 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    RPN rpn;
-
-    std::cout << "Hello RPN ! => " << argv[1] << std::endl;
+    try {
+        RPN rpn;
+        rpn.calculate(argv[1]);
+    } catch (const std::exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
 
     return 0;
 }
