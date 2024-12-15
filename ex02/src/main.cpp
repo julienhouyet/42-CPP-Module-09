@@ -17,6 +17,7 @@ int main(int argc, char **argv) {
         pmergeMe.printDeque();
 
         pmergeMe.sortVector();
+        pmergeMe.sortDeque();
 
         std::cout << "\nSorted: " << std::endl;
         pmergeMe.printVector();

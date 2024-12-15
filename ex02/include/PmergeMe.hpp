@@ -19,6 +19,7 @@ public:
     void printVector() const;
     void printDeque() const;
     void sortVector();
+    void sortDeque();
 
 private:
     std::vector<int> _vector;
