@@ -3,27 +3,35 @@
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        std::cerr << "Error: No arguments." << std::endl;
+        std::cerr << "Error: No arguments provided." << std::endl;
         return 1;
     }
 
     try {
-        PmergeMe pmergeMe;
+        PmergeMe sorter;
+        sorter.fillContainers(argv);
 
-        pmergeMe.fillContainers(argv);
+        std::cout << "Before: ";
+        sorter.printVector();
 
-        std::cout << "Original: " << std::endl;
-        pmergeMe.printVector();
-        pmergeMe.printDeque();
+        clock_t start = clock();
+        sorter.sortVector();
+        clock_t end = clock();
+        double timeVector = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1e6;
 
-        pmergeMe.sortVector();
-        pmergeMe.sortDeque();
+        std::cout << "After: ";
+        sorter.printVector();
+        std::cout << "Time to process a range of 5 elements with std::vector : " << timeVector << " us" << std::endl;
 
-        std::cout << "\nSorted: " << std::endl;
-        pmergeMe.printVector();
-        pmergeMe.printDeque();
-    } catch (const std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        start = clock();
+        sorter.sortDeque();
+        end = clock();
+        double timeDeque = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1e6;
+
+        std::cout << "Time to process a range of 5 elements with std::deque : " << timeDeque << " us" << std::endl;
+    }
+    catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
         return 1;
     }
 

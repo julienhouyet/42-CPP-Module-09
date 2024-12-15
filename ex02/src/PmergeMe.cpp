@@ -51,7 +51,6 @@ void PmergeMe::fillContainers(char **argv) {
  * 
  */
 void PmergeMe::printVector() const {
-    std::cout << "Vector content: ";
     for (size_t i = 0; i < _vector.size(); ++i) {
         std::cout << _vector[i] << " ";
     }
@@ -63,7 +62,6 @@ void PmergeMe::printVector() const {
  * 
  */
 void PmergeMe::printDeque() const {
-    std::cout << "Deque content: ";
     for (size_t i = 0; i < _deque.size(); ++i) {
         std::cout << _deque[i] << " ";
     }
