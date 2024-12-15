@@ -9,11 +9,11 @@ int main(int argc, char **argv) {
 
     try {
         PmergeMe pmergeMe;
-        std::cout << "Arguments :" << std::endl;
-        for (int i = 1; i < argc; ++i) {
-            std::cout << argv[i] << " ";
-        }
-        std::cout << std::endl;
+
+        pmergeMe.fillContainers(argv);
+
+        pmergeMe.printVector();
+        pmergeMe.printDeque();
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

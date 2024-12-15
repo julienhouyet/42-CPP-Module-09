@@ -32,6 +32,11 @@ RPN::~RPN(void)
 //                         Public Member Functions                            //
 // ************************************************************************** //
 
+/**
+ * @brief Calculate the result of the expression
+ * 
+ * @param expression 
+ */
 void RPN::calculate(const std::string &expression)
 {
     std::stack<int> stack;

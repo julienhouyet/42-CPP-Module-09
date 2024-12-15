@@ -4,6 +4,8 @@
 #include <stack>
 #include <map>
 #include <fstream>
+#include <vector>
+#include <deque>
 
 class PmergeMe
 {
@@ -12,6 +14,14 @@ public:
 	PmergeMe(const PmergeMe &copy);
 	PmergeMe &operator=(const PmergeMe &copy);
 	~PmergeMe(void);
+
+    void fillContainers(char **argv);
+    void printVector() const;
+    void printDeque() const;
+
+private:
+    std::vector<int> _vector;
+    std::deque<int> _deque;
 };
 
 #endif
