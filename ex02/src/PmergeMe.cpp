@@ -69,3 +69,33 @@ void PmergeMe::printDeque() const {
     }
     std::cout << std::endl;
 }
+
+/**
+ * @brief Sort the vector
+ * 
+ */
+void PmergeMe::sortVector() {
+    if (_vector.size() <= 1) return;
+
+    std::vector<int> left(_vector.begin(), _vector.begin() + _vector.size() / 2);
+    std::vector<int> right(_vector.begin() + _vector.size() / 2, _vector.end());
+
+    PmergeMe leftSorter, rightSorter;
+    leftSorter._vector = left;
+    rightSorter._vector = right;
+
+    leftSorter.sortVector();
+    rightSorter.sortVector();
+
+    _vector.clear();
+    size_t i = 0, j = 0;
+    while (i < leftSorter._vector.size() && j < rightSorter._vector.size()) {
+        if (leftSorter._vector[i] < rightSorter._vector[j])
+            _vector.push_back(leftSorter._vector[i++]);
+        else
+            _vector.push_back(rightSorter._vector[j++]);
+    }
+
+    while (i < leftSorter._vector.size()) _vector.push_back(leftSorter._vector[i++]);
+    while (j < rightSorter._vector.size()) _vector.push_back(rightSorter._vector[j++]);
+}

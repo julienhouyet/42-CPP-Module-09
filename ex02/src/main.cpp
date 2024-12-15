@@ -12,6 +12,13 @@ int main(int argc, char **argv) {
 
         pmergeMe.fillContainers(argv);
 
+        std::cout << "Original: " << std::endl;
+        pmergeMe.printVector();
+        pmergeMe.printDeque();
+
+        pmergeMe.sortVector();
+
+        std::cout << "\nSorted: " << std::endl;
         pmergeMe.printVector();
         pmergeMe.printDeque();
     } catch (const std::exception &e) {

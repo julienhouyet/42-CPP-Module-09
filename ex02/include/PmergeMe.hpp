@@ -18,6 +18,7 @@ public:
     void fillContainers(char **argv);
     void printVector() const;
     void printDeque() const;
+    void sortVector();
 
 private:
     std::vector<int> _vector;
